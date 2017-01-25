@@ -1,0 +1,150 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.remove {
+  font-weight: bold;
+  color: #0B61A4;
+  padding-left: 5px;
+}
+
+.remove:hover {
+  color: #3F92D2;
+  cursor: pointer;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section__header {
+  justify-content: center;
+  display: flex;
+  color: #0B61A4;
+}
+
+.section__filter {
+  justify-content: flex-end;
+  display: flex;
+  padding-right: 2%;
+}
+
+.section__footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.filter-input {
+  -webkit-border-radius: 10px;
+}
+
+.add-button {
+  cursor: pointer;
+  font-weight: bold;
+  width: 80px;
+  height: 40px;
+  color: #ffffff;
+  background: #0B61A4;
+  -webkit-border-radius: 10px;
+
+}
+
+.add-button:hover {
+  background: #3F92D2;
+}
+
+.pagination {
+
+}
+
+.page-number{
+  font-weight: bold;
+  padding-right: 15px;
+  color: #0B61A4;
+}
+
+.page-number:hover {
+  color: #3F92D2;
+  cursor: pointer;
+}
+
+.table__header {
+  margin-right: 10%;
+  padding-bottom: 15px;
+}
+
+.modal_hidden {
+  display: none;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal__background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.8);
+}
+
+.modal__window {
+  width: 250px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 13px 20px;
+  border-radius: 10px;
+  background: white;
+}
+
+.modal__header {
+  justify-content: flex-start;
+  display: flex;
+  padding-left: 2%;
+}
+
+.modal__section {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+}
+
+.modal__section_input {
+  margin-left: 5px;
+}
+
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.image-search {
+  background-image: url(/public/loupe.png);
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}
+
+.table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  text-align: center;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table__header-cell {
+  align : "center";
+  width: 15%;
+}
+
+.table__cell {
+  font-size: 14px;
+  font-weight: 300;
+  padding: 12px 10px;
+  width: 15%;
+}
