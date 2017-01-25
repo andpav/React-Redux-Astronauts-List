@@ -1,6 +1,5 @@
 var path = require('path');
 var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const plugins = [
   new webpack.DefinePlugin({
@@ -8,10 +7,8 @@ const plugins = [
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }
   }),
-  // new ExtractTextPlugin('styles.css', { disable: process.env.NODE_ENV === 'hot' })
 ];
 
-// HMR only on development
 if (process.env.NODE_ENV === 'hot') {
   plugins.push(
     new webpack.optimize.OccurenceOrderPlugin(),
