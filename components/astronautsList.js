@@ -14,13 +14,13 @@ class AstronautsList extends React.Component {
       modal: false,
     };
 
-    this.openCloseModal = this.openCloseModal.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
     this.filtration = this.filtration.bind(this);
     this.pagination = this.pagination.bind(this);
     this.resetPages = this.resetPages.bind(this);
   }
 
-  openCloseModal() {
+  toggleModal() {
     this.setState({ modal: !this.state.modal })
   }
 
@@ -49,7 +49,7 @@ class AstronautsList extends React.Component {
 
   renderList(astro) {
     const filterPhrase = this.state.filterValue.toLowerCase();
-    const filteredList = { astro: astro.filter(item => ~item.name.toLowerCase().indexOf(filterPhrase)) };
+    const filteredList = { astro: astro.filter(item => item.name.toLowerCase().indexOf(filterPhrase) !== -1) };
     const numberedList = this.resetPages(filteredList);
 
     return { astro: numberedList.astro.filter(item => item.page === this.state.page) };
@@ -67,34 +67,28 @@ class AstronautsList extends React.Component {
         </div>
         <ListItems notes = {renderList} removeItem = {deleteAstronaut} />
         <div className="section section__footer">
-          <AddNew openCloseModal={this.openCloseModal} />
+          <AddNew toggleModal={this.toggleModal} />
           <Pagination pages={this.state.pages} pagination={this.pagination} />
         </div>
-        <Modal isShowModal = {this.state.modal} openCloseModal = {this.openCloseModal} addItem = {addAstronaut}/>
+        <Modal isShowModal = {this.state.modal} toggleModal = {this.toggleModal} addItem = {addAstronaut}/>
       </div>
     );
   }
 }
 
-function Filter(props) {
-  return (
-    <input className="filter-input" onChange={props.filtration} placeholder="Search"/>
-  );
-}
+const Filter = ( ({ filtration }) =>
+  <input className="filter-input" onChange={filtration} placeholder="Search"/>
+)
 
-function AddNew(props) {
-  return (
-    <button className="add-button" onClick={props.openCloseModal}>+ ADD</button>
-  );
-}
+const AddNew = ( ({ toggleModal }) =>
+  <button className="add-button" onClick={toggleModal}>+ ADD</button>
+)
 
-function Pagination(props) {
-  return (
-    <span className="pagination">{props.pages.map( (item, i) =>
-      <label key={i} className="page-number" onClick={ () => props.pagination(item)}>{item}</label>
-    )}</span>
-  );
-}
+const Pagination = ( ({ pages, pagination}) =>
+  <span className="pagination">{pages.map( (item, i) =>
+    <label key={i} className="page-number" onClick={() => pagination(item)}>{item}</label>
+  )}</span>
+)
 
 class Modal extends React.Component {
   constructor(props) {
@@ -109,52 +103,39 @@ class Modal extends React.Component {
     }
 
     this.onSubmit = this.onSubmit.bind(this);
-    this.onClose = this.onClose.bind(this);
-    this.clearInputs= this.clearInputs.bind(this);
-  }
-
-  clearInputs() {
-    this.refs.name.value = '';
-    this.refs.date.value = '';
-    this.refs.days.value = '';
-    this.refs.mission.value = '';
-    this.refs.isMultiple.value = '';
   }
 
   onSubmit() {
     if ( this.refs.name.value !== '' ) {
-      this.props.addItem(
-        this.refs.name.value,
-        this.refs.date.value,
-        this.refs.days.value,
-        this.refs.mission.value,
-        this.refs.isMultiple.value
-      );
-      this.onClose();
+      this.props.addItem({
+        name: this.refs.name.value,
+        date: this.refs.date.value,
+        days: this.refs.days.value,
+        mission: this.refs.mission.value,
+        isMultiple: this.refs.isMultiple.value
+      });
+      this.props.toggleModal();
     }
   }
 
-  onClose() {
-    this.clearInputs();
-    this.props.openCloseModal();
-  }
-
   render() {
+    if (!this.props.isShowModal) return null;
+
     return (
-      <div className = {this.props.isShowModal ? "modal" : "modal_hidden"}>
+      <div className = "modal">
         <div className = "modal__background">
           <div className = "modal__window">
             <div className = "modal__header">
               <h2>New Astronaut</h2>
             </div>
-            <div className="modal__section"><span>Name:</span><input className="modal__section_input" ref = 'name' /></div>
-            <div className="modal__section"><span>Date:</span><input className="modal__section_input" ref = 'date' /></div>
-            <div className="modal__section"><span>Days:</span><input className="modal__section_input" ref = 'days' /></div>
-            <div className="modal__section"><span>Mission:</span><input className="modal__section_input" ref = 'mission' /></div>
-            <div className="modal__section"><span>IsMultiple:</span><input className="modal__section_input" ref = 'isMultiple' /></div>
+            <div className="modal__section"><span className="modal__section_text">Name:</span><input className="modal__section_input" ref = 'name' /></div>
+            <div className="modal__section"><span className="modal__section_text">Date:</span><input className="modal__section_input" ref = 'date' /></div>
+            <div className="modal__section"><span className="modal__section_text">Days:</span><input className="modal__section_input" ref = 'days' /></div>
+            <div className="modal__section"><span className="modal__section_text">Mission:</span><input className="modal__section_input" ref = 'mission' /></div>
+            <div className="modal__section"><span className="modal__section_text">IsMultiple:</span><input className="modal__section_input" ref = 'isMultiple' /></div>
             <div className = "modal__footer">
-              <button onClick={this.onSubmit}>Submit</button>
-              <button onClick={this.onClose}>Close</button>
+              <button className="submit-button" onClick={this.onSubmit}>Submit</button>
+              <button className="close-button" onClick={this.props.toggleModal}>Close</button>
             </div>
           </div>
         </div>
@@ -196,7 +177,7 @@ class ListItem extends React.Component {
   }
 
   removeClick() {
-    this.props.removeItem(this.props.item.id);
+    this.props.removeItem({ id: this.props.item.id });
   }
 
   render() {
