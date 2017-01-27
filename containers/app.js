@@ -5,7 +5,7 @@ import { actions } from '../ducks/astro';
 
 function mapStateToProps(state) {
   return {
-    astro: state.astro.astro
+    astro: state.astro.astro,
   };
 }
 

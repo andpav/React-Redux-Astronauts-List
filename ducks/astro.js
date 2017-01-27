@@ -14,14 +14,14 @@ const DELETE_ASTRONAUT = 'DELETE_ASTRONAUT';
 function addAstronaut(astronaut) {
   return {
     type: ADD_ASTRONAUT,
-    payload: astronaut
+    payload: astronaut,
   };
 }
 
 function deleteAstronaut(astronaut) {
   return {
     type: DELETE_ASTRONAUT,
-    payload: astronaut
+    payload: astronaut,
   };
 }
 
@@ -29,20 +29,24 @@ function deleteAstronaut(astronaut) {
 * Reducer
 * */
 
-const astronauts = inputJson;
-let idIncr = astronauts.length - 1; // "unique" identifier
+const astronautsList = inputJson;
+let idIncr = astronautsList.length - 1; // "unique" identifier
 
-astronauts.map( astronaut => {
-  astronaut.date = new Date(parseInt(astronaut.date) * 1000).toLocaleDateString();
-})
+astronautsList.map(astronautsListItem => {
+  const astronaut = astronautsListItem;
 
-const initialState = { astro: astronauts };
+  astronaut.date = new Date(parseInt(astronaut.date, 10) * 1000).toLocaleDateString();
+
+  return astronaut;
+});
+
+const initialState = { astro: astronautsList };
 
 export default function (state = initialState, action) {
   switch (action.type) {
 
-    case ADD_ASTRONAUT:
-      idIncr ++ ;
+    case ADD_ASTRONAUT: {
+      idIncr++;
 
       const astronauts = state.astro;
 
@@ -52,26 +56,26 @@ export default function (state = initialState, action) {
         date: action.payload.date,
         days: action.payload.days,
         mission: action.payload.mission,
-        isMultiple: action.payload.isMultiple
+        isMultiple: action.payload.isMultiple,
       });
 
       return {
-        astro: astronauts
-      }
+        astro: astronauts,
+      };
+    }
 
-
-    case DELETE_ASTRONAUT:
+    case DELETE_ASTRONAUT: {
       return {
-        astro: state.astro.filter(item => item.id !== action.payload.id)
-      }
+        astro: state.astro.filter(item => item.id !== action.payload.id),
+      };
+    }
 
     default:
       return state;
   }
 }
 
-export const actions =
-{
+export const actions = {
   addAstronaut,
-  deleteAstronaut
+  deleteAstronaut,
 };

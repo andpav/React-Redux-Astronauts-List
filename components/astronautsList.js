@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import Modal from './modal.jsx';
 
 const ITEMS_ON_PAGE = 4;
 
@@ -8,7 +8,7 @@ class AstronautsList extends React.Component {
     super(props);
 
     this.state = {
-      filterValue: "",
+      filterValue: '',
       page: 1,
       pages: [],
       modal: false,
@@ -21,7 +21,7 @@ class AstronautsList extends React.Component {
   }
 
   toggleModal() {
-    this.setState({ modal: !this.state.modal })
+    this.setState({ modal: !this.state.modal });
   }
 
   filtration(event) {
@@ -35,14 +35,18 @@ class AstronautsList extends React.Component {
   resetPages(list) {
     this.state.pages.splice(0, this.state.pages.length);
 
-    list.astro.map((item, i) => {
-      const itemPage = ( Math.floor(i / ITEMS_ON_PAGE) + 1 );
-      item.page = itemPage;
+    list.astro.map((astronautsListItem, i) => {
+      const astronaut = astronautsListItem;
+      const itemPage = (Math.floor(i / ITEMS_ON_PAGE) + 1);
 
-      if ( this.state.pages[this.state.pages.length-1] !== itemPage ) {
+      astronaut.page = itemPage;
+
+      if (this.state.pages[this.state.pages.length - 1] !== itemPage) {
         this.state.pages.push(itemPage);
       }
-    })
+
+      return astronaut;
+    });
 
     return list;
   }
@@ -63,148 +67,96 @@ class AstronautsList extends React.Component {
       <div className="page">
         <h1 className="section section__header">Astronauts</h1>
         <div className="section section__filter">
-          <Filter filtration={this.filtration}/>
+          <Filter filtration={this.filtration} />
         </div>
-        <ListItems notes = {renderList} removeItem = {deleteAstronaut} />
+        <ListItems notes={renderList} removeItem={deleteAstronaut} />
         <div className="section section__footer">
           <AddNew toggleModal={this.toggleModal} />
           <Pagination pages={this.state.pages} pagination={this.pagination} />
         </div>
-        <Modal isShowModal = {this.state.modal} toggleModal = {this.toggleModal} addItem = {addAstronaut}/>
+        <Modal isShowModal={this.state.modal} toggleModal={this.toggleModal} addItem={addAstronaut} />
       </div>
     );
   }
 }
 
-const Filter = ( ({ filtration }) =>
-  <input className="filter-input" onChange={filtration} placeholder="Search"/>
-)
+const Filter = (({ filtration }) =>
+  <input className="filter-input" onChange={filtration} placeholder="Search" />
+);
 
-const AddNew = ( ({ toggleModal }) =>
+const AddNew = (({ toggleModal }) =>
   <button className="add-button" onClick={toggleModal}>+ ADD</button>
-)
+);
 
-const Pagination = ( ({ pages, pagination}) =>
-  <span className="pagination">{pages.map( (item, i) =>
+const Pagination = (({ pages, pagination }) =>
+  <span className="pagination">{pages.map((item, i) =>
     <label key={i} className="page-number" onClick={() => pagination(item)}>{item}</label>
   )}</span>
-)
+);
 
-class Modal extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      name: '',
-      date: '',
-      days: '',
-      mission: '',
-      isMultiple: ''
-    }
-
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
-    if ( this.refs.name.value !== '' ) {
-      this.props.addItem({
-        name: this.refs.name.value,
-        date: this.refs.date.value,
-        days: this.refs.days.value,
-        mission: this.refs.mission.value,
-        isMultiple: this.refs.isMultiple.value
-      });
-      this.props.toggleModal();
-    }
-  }
-
-  render() {
-    if (!this.props.isShowModal) return null;
-
-    return (
-      <div className = "modal">
-        <div className = "modal__background">
-          <div className = "modal__window">
-            <div className = "modal__header">
-              <h2>New Astronaut</h2>
-            </div>
-            <div className="modal__section"><span className="modal__section_text">Name:</span><input className="modal__section_input" ref = 'name' /></div>
-            <div className="modal__section"><span className="modal__section_text">Date:</span><input className="modal__section_input" ref = 'date' /></div>
-            <div className="modal__section"><span className="modal__section_text">Days:</span><input className="modal__section_input" ref = 'days' /></div>
-            <div className="modal__section"><span className="modal__section_text">Mission:</span><input className="modal__section_input" ref = 'mission' /></div>
-            <div className="modal__section"><span className="modal__section_text">IsMultiple:</span><input className="modal__section_input" ref = 'isMultiple' /></div>
-            <div className = "modal__footer">
-              <button className="submit-button" onClick={this.onSubmit}>Submit</button>
-              <button className="close-button" onClick={this.props.toggleModal}>Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
-
-class ListItems extends React.Component {
-  render() {
-    const { notes } = this.props;
-    return (
-      <div className="section section__table">
-        <div className="table__header">
-          <table className="table">
-            <tbody>
-              <tr>
-                <th className = "table__header-cell">Id</th>
-                <th className = "table__header-cell">Name</th>
-                <th className = "table__header-cell">Date</th>
-                <th className = "table__header-cell">Days</th>
-                <th className = "table__header-cell">Mission</th>
-                <th className = "table__header-cell">IsMultiple</th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {notes.astro.map( item => <ListItem key={item.id} item = {item} removeItem = {this.props.removeItem} />)}
-      </div>
-    );
-  }
-}
-
-class ListItem extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.removeClick = this.removeClick.bind(this);
-  }
-
-  removeClick() {
-    this.props.removeItem({ id: this.props.item.id });
-  }
-
-  render() {
-    const item = this.props.item;
-
-    return (
+const ListItems = (({ notes, removeItem }) =>
+  <div className="section section__table">
+    <div className="table__header">
       <table className="table">
         <tbody>
           <tr>
-            <td className = "table__cell">{item.id}</td>
-            <td className = "table__cell">{item.name}</td>
-            <td className = "table__cell">{item.date}</td>
-            <td className = "table__cell">{item.days}</td>
-            <td className = "table__cell">{item.mission}</td>
-            <td className = "table__cell">{item.isMultiple}</td>
-            <td onClick = {this.removeClick} className = "remove">x</td>
+            <th className="table__header-cell">Id</th>
+            <th className="table__header-cell">Name</th>
+            <th className="table__header-cell">Date</th>
+            <th className="table__header-cell">Days</th>
+            <th className="table__header-cell">Mission</th>
+            <th className="table__header-cell">IsMultiple</th>
           </tr>
         </tbody>
       </table>
-    );
-  }
-}
+    </div>
+    {notes.astro.map(item => <ListItem key={item.id} item={item} removeItem={removeItem} />)}
+  </div>
+);
+
+const ListItem = (({ item, removeItem }) =>
+  <table className="table">
+    <tbody>
+      <tr>
+        <td className="table__cell">{item.id}</td>
+        <td className="table__cell">{item.name}</td>
+        <td className="table__cell">{item.date}</td>
+        <td className="table__cell">{item.days}</td>
+        <td className="table__cell">{item.mission}</td>
+        <td className="table__cell">{item.isMultiple}</td>
+        <td onClick={() => removeItem({ id: item.id })} className="remove">x</td>
+      </tr>
+    </tbody>
+  </table>
+);
 
 AstronautsList.propTypes = {
   astro: React.PropTypes.array.isRequired,
   addAstronaut: React.PropTypes.func.isRequired,
   deleteAstronaut: React.PropTypes.func.isRequired,
+};
+
+Filter.propTypes = {
+  filtration: React.PropTypes.func.isRequired,
+};
+
+AddNew.propTypes = {
+  toggleModal: React.PropTypes.func.isRequired,
+};
+
+Pagination.propTypes = {
+  pages: React.PropTypes.array.isRequired,
+  pagination: React.PropTypes.func.isRequired,
+};
+
+ListItems.propTypes = {
+  removeItem: React.PropTypes.func.isRequired,
+  notes: React.PropTypes.object.isRequired,
+};
+
+ListItem.propTypes = {
+  removeItem: React.PropTypes.func.isRequired,
+  item: React.PropTypes.object.isRequired,
 };
 
 export default AstronautsList;
