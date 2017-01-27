@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import AstronautsList from '../components/astronautsList';
+import AstronautsList from '../components/astronautsList.jsx';
 import { actions } from '../ducks/astro';
 
 function mapStateToProps(state) {

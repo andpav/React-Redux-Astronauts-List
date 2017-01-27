@@ -90,14 +90,14 @@ const AddNew = (({ toggleModal }) =>
 
 const Pagination = (({ pages, pagination }) =>
   <span className="pagination">{pages.map((item, i) =>
-    <label key={i} className="page-number" onClick={() => pagination(item)}>{item}</label>
+    <label key={i} className="pagination__page-number" onClick={() => pagination(item)}>{item}</label>
   )}</span>
 );
 
 const ListItems = (({ notes, removeItem }) =>
   <div className="section section__table">
     <div className="table__header">
-      <table className="table">
+      <table className="table__row">
         <tbody>
           <tr>
             <th className="table__header-cell">Id</th>
@@ -115,7 +115,7 @@ const ListItems = (({ notes, removeItem }) =>
 );
 
 const ListItem = (({ item, removeItem }) =>
-  <table className="table">
+  <table className="table__row">
     <tbody>
       <tr>
         <td className="table__cell">{item.id}</td>
